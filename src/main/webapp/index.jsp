@@ -1,583 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>neat · e‑commerce ui</title>
-  <!-- Font & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Store</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --fg: #1a1a1a;
+    --muted: #6b6b6b;
+    --accent: #1a1a1a;
+    --card: #ffffff;
+    --border: #e5e5e0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.5;
+  }
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,250,247,0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .logo { font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; }
+  nav { display: flex; gap: 2rem; }
+  nav a { color: var(--fg); text-decoration: none; font-size: 0.9rem; }
+  nav a:hover { color: var(--muted); }
+  .actions { display: flex; gap: 1rem; align-items: center; }
+  .icon-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 1.1rem; padding: 0.4rem;
+  }
+  .cart-count {
+    background: var(--fg); color: var(--bg);
+    font-size: 0.7rem; border-radius: 999px;
+    padding: 0.1rem 0.4rem; margin-left: -0.5rem;
+  }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f8fafc;
-      color: #0f172a;
-      line-height: 1.5;
-      padding: 2rem 1.5rem;
-    }
+  .hero {
+    padding: 6rem 2rem;
+    text-align: center;
+    background: linear-gradient(180deg, #fafaf7 0%, #f0efe9 100%);
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+  }
+  .hero p { color: var(--muted); font-size: 1.1rem; margin-bottom: 2rem; }
+  .btn {
+    display: inline-block;
+    background: var(--accent); color: var(--bg);
+    padding: 0.9rem 2rem; border-radius: 999px;
+    text-decoration: none; font-size: 0.9rem; font-weight: 500;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .btn:hover { transform: translateY(-1px); opacity: 0.9; }
 
-    /* main container – keeps everything tidy */
-    .store {
-      max-width: 1280px;
-      margin: 0 auto;
-    }
+  .section { padding: 4rem 2rem; max-width: 1400px; margin: 0 auto; }
+  .section-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 2rem;
+  }
+  .section-header h2 {
+    font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em;
+  }
+  .section-header a { color: var(--muted); font-size: 0.9rem; text-decoration: none; }
 
-    /* ---------- HEADER ---------- */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1.25rem;
-      margin-bottom: 2rem;
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+  .product {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
+  .product:hover { transform: translateY(-4px); }
+  .product-img {
+    aspect-ratio: 1;
+    background: #f0efe9;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 0.85rem;
+    position: relative;
+  }
+  .badge {
+    position: absolute; top: 0.75rem; left: 0.75rem;
+    background: var(--fg); color: var(--bg);
+    font-size: 0.7rem; padding: 0.25rem 0.6rem;
+    border-radius: 999px; font-weight: 500;
+  }
+  .product-info { padding: 1rem; }
+  .product-info h3 { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.25rem; }
+  .product-info .price { color: var(--muted); font-size: 0.9rem; }
+  .product-info .price s { margin-left: 0.5rem; opacity: 0.6; }
 
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
 
-    .logo-icon {
-      background: #0f172a;
-      color: white;
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      box-shadow: 0 6px 12px -4px rgba(15, 23, 42, 0.15);
-    }
-
-    .logo-text {
-      font-weight: 700;
-      font-size: 1.5rem;
-      letter-spacing: -0.02em;
-      color: #0f172a;
-    }
-
-    .logo-text span {
-      color: #64748b;
-      font-weight: 400;
-      font-size: 1rem;
-      margin-left: 0.2rem;
-    }
-
-    .search-bar {
-      flex: 1;
-      min-width: 240px;
-      max-width: 400px;
-      display: flex;
-      align-items: center;
-      background: white;
-      padding: 0.6rem 1rem;
-      border-radius: 48px;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-      transition: 0.2s;
-    }
-
-    .search-bar:focus-within {
-      border-color: #94a3b8;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    }
-
-    .search-bar i {
-      color: #94a3b8;
-      font-size: 1rem;
-      margin-right: 0.65rem;
-    }
-
-    .search-bar input {
-      border: none;
-      outline: none;
-      width: 100%;
-      font-size: 0.95rem;
-      font-weight: 400;
-      background: transparent;
-      color: #0f172a;
-    }
-
-    .search-bar input::placeholder {
-      color: #94a3b8;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .icon-btn {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 40px;
-      width: 42px;
-      height: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #1e293b;
-      font-size: 1.15rem;
-      cursor: default;
-      transition: 0.15s;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-      position: relative;
-    }
-
-    .icon-btn:hover {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
-    }
-
-    .cart-badge {
-      position: absolute;
-      top: -4px;
-      right: -4px;
-      background: #0f172a;
-      color: white;
-      font-size: 0.65rem;
-      font-weight: 600;
-      width: 20px;
-      height: 20px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #f8fafc;
-    }
-
-    /* ---------- NAV / CATEGORY CHIPS ---------- */
-    .nav-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .chip {
-      background: white;
-      border: 1px solid #e2e8f0;
-      padding: 0.5rem 1.15rem;
-      border-radius: 30px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #334155;
-      cursor: default;
-      transition: 0.15s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    }
-
-    .chip.active {
-      background: #0f172a;
-      border-color: #0f172a;
-      color: white;
-      box-shadow: 0 6px 12px -4px rgba(15, 23, 42, 0.2);
-    }
-
-    .chip:hover:not(.active) {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
-    }
-
-    /* ---------- PRODUCT GRID ---------- */
-    .section-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
-    }
-
-    .section-header h2 {
-      font-size: 1.35rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: #0f172a;
-    }
-
-    .section-header a {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #64748b;
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: 0.15s;
-      cursor: default;
-    }
-
-    .section-header a i {
-      font-size: 0.75rem;
-      margin-left: 0.25rem;
-    }
-
-    .section-header a:hover {
-      color: #0f172a;
-      border-bottom-color: #cbd5e1;
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    /* ---------- PRODUCT CARD ---------- */
-    .product-card {
-      background: white;
-      border-radius: 24px;
-      border: 1px solid #eef2f6;
-      overflow: hidden;
-      transition: 0.2s ease;
-      box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.02);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .product-card:hover {
-      transform: translateY(-4px);
-      border-color: #e2e8f0;
-      box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.08);
-    }
-
-    .card-image {
-      background: #f1f5f9;
-      height: 190px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      transition: 0.2s;
-    }
-
-    .card-image i {
-      font-size: 3.2rem;
-      color: #94a3b8;
-      opacity: 0.7;
-      transition: 0.2s;
-    }
-
-    .product-card:hover .card-image i {
-      transform: scale(1.05);
-      color: #64748b;
-    }
-
-    .wishlist-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: white;
-      border: none;
-      width: 34px;
-      height: 34px;
-      border-radius: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #64748b;
-      font-size: 0.95rem;
-      cursor: default;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-      transition: 0.15s;
-      border: 1px solid #eef2f6;
-    }
-
-    .wishlist-btn:hover {
-      background: #f8fafc;
-      color: #0f172a;
-    }
-
-    .card-content {
-      padding: 1.25rem 1.25rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-
-    .product-category {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      font-weight: 600;
-      color: #64748b;
-      margin-bottom: 0.4rem;
-    }
-
-    .product-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      color: #0f172a;
-      margin-bottom: 0.35rem;
-      line-height: 1.3;
-    }
-
-    .product-price {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 1rem;
-    }
-
-    .product-price small {
-      font-size: 0.8rem;
-      font-weight: 400;
-      color: #94a3b8;
-      margin-left: 0.3rem;
-    }
-
-    .add-btn {
-      margin-top: auto;
-      background: white;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 40px;
-      padding: 0.7rem 1rem;
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      cursor: default;
-      transition: 0.15s;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .add-btn i {
-      font-size: 0.9rem;
-      color: #475569;
-    }
-
-    .add-btn:hover {
-      background: #0f172a;
-      border-color: #0f172a;
-      color: white;
-    }
-
-    .add-btn:hover i {
-      color: white;
-    }
-
-    /* subtle micro‑interaction for realism */
-    .product-card, .icon-btn, .chip, .add-btn, .wishlist-btn {
-      cursor: default;
-    }
-
-    /* ---------- FOOTER / TRUST MARKERS ---------- */
-    .trust-bar {
-      margin-top: 3.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #e2e8f0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1.5rem;
-      font-size: 0.85rem;
-      color: #64748b;
-    }
-
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .trust-item i {
-      font-size: 1rem;
-      color: #94a3b8;
-    }
-
-    /* Responsive touches */
-    @media (max-width: 640px) {
-      body { padding: 1.25rem 1rem; }
-      .header { flex-direction: column; align-items: stretch; }
-      .search-bar { max-width: none; }
-      .header-actions { justify-content: flex-end; }
-      .product-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
-      .card-image { height: 140px; }
-      .card-image i { font-size: 2.5rem; }
-      .product-title { font-size: 0.95rem; }
-      .trust-bar { flex-direction: column; align-items: flex-start; }
-    }
-
-    @media (max-width: 420px) {
-      .product-grid { grid-template-columns: 1fr; }
-    }
-
-    /* decorative dots (just for clean look) */
-    .badge-dot {
-      width: 6px;
-      height: 6px;
-      background: #22c55e;
-      border-radius: 10px;
-      display: inline-block;
-      margin-right: 6px;
-    }
-  </style>
+  @media (max-width: 640px) {
+    nav { display: none; }
+    .hero { padding: 4rem 1.5rem; }
+    .section { padding: 3rem 1.5rem; }
+  }
+</style>
 </head>
 <body>
-  <div class="store">
-    <!-- HEADER -->
-    <header class="header">
-      <div class="logo-area">
-        <div class="logo-icon">
-          <i class="fas fa-bag-shopping"></i>
-        </div>
-        <div class="logo-text">
-          neat<span>.store</span>
-        </div>
-      </div>
-
-      <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search products…" value="wireless headphones">
-      </div>
-
-      <div class="header-actions">
-        <div class="icon-btn">
-          <i class="far fa-heart"></i>
-        </div>
-        <div class="icon-btn">
-          <i class="far fa-user"></i>
-        </div>
-        <div class="icon-btn">
-          <i class="fas fa-shopping-bag"></i>
-          <span class="cart-badge">3</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- CATEGORY CHIPS -->
-    <div class="nav-chips">
-      <div class="chip active">All</div>
-      <div class="chip">Audio</div>
-      <div class="chip">Watches</div>
-      <div class="chip">Accessories</div>
-      <div class="chip">Cameras</div>
-      <div class="chip">Gaming</div>
-      <div class="chip">Smart home</div>
+  <header>
+    <div class="logo">STORE.</div>
+    <nav>
+      <a href="#">New</a>
+      <a href="#">Shop</a>
+      <a href="#">Collections</a>
+      <a href="#">About</a>
+    </nav>
+    <div class="actions">
+      <button class="icon-btn">🔍</button>
+      <button class="icon-btn">👤</button>
+      <button class="icon-btn">🛒 <span class="cart-count">2</span></button>
     </div>
+  </header>
 
-    <!-- PRODUCT SECTION -->
+  <section class="hero">
+    <h1>Essentials, refined.</h1>
+    <p>Timeless pieces designed to last. Free shipping over $50.</p>
+    <a href="#" class="btn">Shop the collection</a>
+  </section>
+
+  <section class="section">
     <div class="section-header">
-      <h2>Featured products</h2>
-      <a href="#">View all <i class="fas fa-arrow-right"></i></a>
+      <h2>Featured</h2>
+      <a href="#">View all →</a>
     </div>
-
-    <div class="product-grid">
-      <!-- CARD 1 -->
-      <div class="product-card">
-        <div class="card-image">
-          <i class="fas fa-headphones"></i>
-          <div class="wishlist-btn"><i class="far fa-heart"></i></div>
-        </div>
-        <div class="card-content">
-          <div class="product-category">Audio</div>
-          <div class="product-title">Aura Studio Pro</div>
-          <div class="product-price">$249 <small>USD</small></div>
-          <button class="add-btn"><i class="fas fa-plus"></i> Add to cart</button>
+    <div class="grid">
+      <div class="product">
+        <div class="product-img">Product image<span class="badge">New</span></div>
+        <div class="product-info">
+          <h3>Merino Wool Sweater</h3>
+          <div class="price">$128</div>
         </div>
       </div>
-
-      <!-- CARD 2 -->
-      <div class="product-card">
-        <div class="card-image">
-          <i class="fas fa-clock"></i>
-          <div class="wishlist-btn"><i class="far fa-heart"></i></div>
-        </div>
-        <div class="card-content">
-          <div class="product-category">Watches</div>
-          <div class="product-title">Minimal Chrono</div>
-          <div class="product-price">$189 <small>USD</small></div>
-          <button class="add-btn"><i class="fas fa-plus"></i> Add to cart</button>
+      <div class="product">
+        <div class="product-img">Product image</div>
+        <div class="product-info">
+          <h3>Canvas Tote</h3>
+          <div class="price">$68</div>
         </div>
       </div>
-
-      <!-- CARD 3 -->
-      <div class="product-card">
-        <div class="card-image">
-          <i class="fas fa-camera"></i>
-          <div class="wishlist-btn"><i class="far fa-heart"></i></div>
-        </div>
-        <div class="card-content">
-          <div class="product-category">Cameras</div>
-          <div class="product-title">VlogMate 4K</div>
-          <div class="product-price">$329 <small>USD</small></div>
-          <button class="add-btn"><i class="fas fa-plus"></i> Add to cart</button>
+      <div class="product">
+        <div class="product-img">Product image<span class="badge">Sale</span></div>
+        <div class="product-info">
+          <h3>Leather Wallet</h3>
+          <div class="price">$45 <s>$80</s></div>
         </div>
       </div>
-
-      <!-- CARD 4 -->
-      <div class="product-card">
-        <div class="card-image">
-          <i class="fas fa-gamepad"></i>
-          <div class="wishlist-btn"><i class="far fa-heart"></i></div>
-        </div>
-        <div class="card-content">
-          <div class="product-category">Gaming</div>
-          <div class="product-title">Nova Controller</div>
-          <div class="product-price">$89 <small>USD</small></div>
-          <button class="add-btn"><i class="fas fa-plus"></i> Add to cart</button>
-        </div>
-      </div>
-
-      <!-- CARD 5 -->
-      <div class="product-card">
-        <div class="card-image">
-          <i class="fas fa-laptop"></i>
-          <div class="wishlist-btn"><i class="far fa-heart"></i></div>
-        </div>
-        <div class="card-content">
-          <div class="product-category">Accessories</div>
-          <div class="product-title">AluStand Hub</div>
-          <div class="product-price">$79 <small>USD</small></div>
-          <button class="add-btn"><i class="fas fa-plus"></i> Add to cart</button>
-        </div>
-      </div>
-
-      <!-- CARD 6 -->
-      <div class="product-card">
-        <div class="card-image">
-          <i class="fas fa-mobile-alt"></i>
-          <div class="wishlist-btn"><i class="far fa-heart"></i></div>
-        </div>
-        <div class="card-content">
-          <div class="product-category">Smart home</div>
-          <div class="product-title">SmartHub Mini</div>
-          <div class="product-price">$129 <small>USD</small></div>
-          <button class="add-btn"><i class="fas fa-plus"></i> Add to cart</button>
+      <div class="product">
+        <div class="product-img">Product image</div>
+        <div class="product-info">
+          <h3>Ceramic Mug</h3>
+          <div class="price">$24</div>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- subtle trust / footer info -->
-    <div class="trust-bar">
-      <div class="trust-item">
-        <i class="fas fa-truck"></i> Free shipping over $50
-      </div>
-      <div class="trust-item">
-        <i class="fas fa-undo-alt"></i> 30‑day returns
-      </div>
-      <div class="trust-item">
-        <i class="fas fa-lock"></i> Secure checkout
-      </div>
-      <div class="trust-item">
-        <span class="badge-dot"></span> 24/7 support
-      </div>
-    </div>
-  </div>
+  <footer>
+    © 2025 Store. All rights reserved.
+  </footer>
 </body>
 </html>
